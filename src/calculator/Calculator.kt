@@ -2,25 +2,27 @@ package calculator
 
 import operator.*
 
+const val DEFAULT_INITIAL_VALUE = 0.0
+
 class Calculator() {
-  private var currentValue = 0.0
-  private var op: Operator? = null
+  private var currentValue = DEFAULT_INITIAL_VALUE
+  private var operation: Operator? = null
   var resultBuffer: Double? = null
     private set
 
   fun processNumber(value: Double) {
-    if (op == null) {
+    if (operation == null) {
       currentValue = value;
       resultBuffer = null
     } else {
-      currentValue = op!!.calculate(currentValue, value)
+      currentValue = operation?.calculate(currentValue, value)?:  DEFAULT_INITIAL_VALUE
       resultBuffer = currentValue
-      op = null
+      operation = null
     }
   }
 
-  fun processOperator(op: Operator?) {
-    this.op = op
+  fun processOperator(operation: Operator?) {
+    this.operation = operation
     resultBuffer = null
   }
 }

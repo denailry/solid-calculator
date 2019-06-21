@@ -1,16 +1,39 @@
 import handler.*
 import calculator.Calculator
 
-class Runner(_inputHandler: InputHandler, _outputHandler: OutputHandler) {
+class Runner(private var inputHandler: InputHandler, private var outputHandler: OutputHandler) {
   constructor(handler : IOHandler) : this(handler, handler)
-
-  private var inputHandler = _inputHandler
-  private var outputHandler = _outputHandler
 
   private val calc: Calculator = Calculator()
 
-  fun isConfigurationInput(rawInput: String) : Boolean {
+  fun run() {
+    println("Hello, calculator is ready! ^_^")
+    println()
+
+    startReceivingInput()
+
+    println("Bye! ^_^")
+  }
+
+  private fun startReceivingInput() {
+    var input: String? = null
+
+    while (input != "Q") {
+      if (input != null) {
+        if (isConfiguration(input)) {
+          configure(input)
+        } else {
+          execute(input)
+        }
+      }
+
+      input = readLine()
+    }
+  }
+
+  private fun isConfiguration(rawInput: String) : Boolean {
     val input = rawInput.trim()
+    
     if (input.length > 7) {
       return (input.substring(0, 7) == "config:")
     } 
@@ -18,7 +41,7 @@ class Runner(_inputHandler: InputHandler, _outputHandler: OutputHandler) {
     return false
   }
 
-  fun configure(rawInput: String) {
+  private fun configure(rawInput: String) {
     try {
       val input = rawInput.trim()
       when (input) {
@@ -36,11 +59,7 @@ class Runner(_inputHandler: InputHandler, _outputHandler: OutputHandler) {
     }
   }
 
-  private fun formattedPrint(type: String?, message: String?) {
-    println("--- " + type + ": " + message + " ---")
-  }
-
-  fun executeInput(input: String) {
+  private fun execute(input: String) {
     try {
       inputHandler.processInput(calc, input)
       if (calc.resultBuffer != null) {
@@ -51,22 +70,7 @@ class Runner(_inputHandler: InputHandler, _outputHandler: OutputHandler) {
     }
   }
 
-  fun run() {
-    println("Calculator is running!")
-    println()
-
-    var input: String? = null
-
-    while (input != "Q") {
-      if (input != null) {
-        if (isConfigurationInput(input)) {
-          configure(input)
-        } else {
-          executeInput(input)
-        }
-      }
-
-      input = readLine()
-    }
+  private fun formattedPrint(type: String?, message: String?) {
+    println("--- " + type + ": " + message + " ---")
   }
 }
